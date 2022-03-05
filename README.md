@@ -1,4 +1,4 @@
-# libgmp
+# gmp4pony
 
 GMP wrapper for Pony. Requires GNU MP.
 
