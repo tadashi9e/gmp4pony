@@ -1,0 +1,19 @@
+{
+ "packages": [
+   "gmp"
+ ],
+  "deps": [],
+  "info": {
+    "description": "GMP wrapper",
+    "homepage": "https://github.com/tadashi9e/gmp4pony",
+    "license": "BSD-2-Clause",
+    "documentation_url": "https://github.com/tadashi9e/gmp4pony",
+    "version": "0.0.1",
+    "name": "gmp"
+  },
+  "scripts": {
+    "posix": {
+      "post_fetch_or_update": "make all"
+    }
+  }
+}
