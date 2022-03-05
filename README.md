@@ -10,15 +10,13 @@ pre-alpha software.
 
 * Install [pony-stable](https://github.com/ponylang/pony-stable)
 * Install GMP library (gmp.h, libgmp.so)
-* Update your `bundle.json`
-
-```json
-{
-  "type": "github",
-  "repo": "tadashi9e/gmp4pony"
-}
-```
-
-* `stable fetch` to fetch your dependencies
+* Install [corral](https://github.com/ponylang/corral)
+* `corral init` in your project directory
+* `corral add github.com/tadashi9e/gmp4pony.git`
+* `corral update`
 * `use "gmp"` to include this package
-* `stable env ponyc` to compile your application
+* `corral run -- ponyc` to compile your application
+
+## Limitation
+
+I tested on Ubuntu 20.04 LTS only.
