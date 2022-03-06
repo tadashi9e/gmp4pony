@@ -29,7 +29,7 @@ actor Main
       p = f2 * p
       k = k + 1
     end
-    ((a + b) * (a + b)) / (t * Mpf.from_i64(4))
+    ((a + b) * (a + b)) / (t * f4)
 
   fun dump_pi(env: Env, pi: Mpf,
               bufSize: USize = 1000, pattern: String = "%.1000Ff"): None =>
