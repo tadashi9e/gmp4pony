@@ -15,6 +15,9 @@ use @pony_mpz_add[None](r: Pointer[None], a: Pointer[None], b: Pointer[None])
 use @pony_mpz_sub[None](r: Pointer[None], a: Pointer[None], b: Pointer[None])
 use @pony_mpz_mul[None](r: Pointer[None], a: Pointer[None], b: Pointer[None])
 use @pony_mpz_fdiv_q[None](r: Pointer[None], a: Pointer[None], b: Pointer[None])
+use @pony_mpz_and[None](r: Pointer[None], a: Pointer[None], b: Pointer[None])
+use @pony_mpz_ior[None](r: Pointer[None], a: Pointer[None], b: Pointer[None])
+use @pony_mpz_xor[None](r: Pointer[None], a: Pointer[None], b: Pointer[None])
 use @pony_mpz_cmp[I32](z: Pointer[None], other: Pointer[None])
 use @pony_mpz_sizeinbase[USize](p: Pointer[None], base: I32)
 use @pony_mpz_snprintf[Pointer[U8] ref](
@@ -163,6 +166,30 @@ class Mpz
     """
     let r: Mpz = Mpz
     @pony_mpz_fdiv_q(r._z, _z, other._z)
+    r
+
+  fun op_and(other: Mpz): Mpz =>
+    """
+    and operator (mpz_and).
+    """
+    let r: Mpz = Mpz
+    @pony_mpz_and(r._z, _z, other._z)
+    r
+
+  fun op_or(other: Mpz): Mpz =>
+    """
+    or operator (mpz_ior).
+    """
+    let r: Mpz = Mpz
+    @pony_mpz_ior(r._z, _z, other._z)
+    r
+
+  fun op_xor(other: Mpz): Mpz =>
+    """
+    xor operator (mpz_xor).
+    """
+    let r: Mpz = Mpz
+    @pony_mpz_xor(r._z, _z, other._z)
     r
 
   fun eq(other: Mpz): Bool =>

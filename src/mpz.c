@@ -129,6 +129,31 @@ pony_mpz_fdiv_q(void* r, void* a, void* b) {
   }
   mpz_fdiv_q(*(mpz_t*)r, *(mpz_t*)a, *(mpz_t*)b);
 }
+
+void
+pony_mpz_and(void* r, void* a, void* b) {
+  if (r == NULL || a == NULL || b == NULL) {
+    pony_error();
+  }
+  mpz_and(*(mpz_t*)r, *(mpz_t*)a, *(mpz_t*)b);
+}
+
+void
+pony_mpz_ior(void* r, void* a, void* b) {
+  if (r == NULL || a == NULL || b == NULL) {
+    pony_error();
+  }
+  mpz_ior(*(mpz_t*)r, *(mpz_t*)a, *(mpz_t*)b);
+}
+
+void
+pony_mpz_xor(void* r, void* a, void* b) {
+  if (r == NULL || a == NULL || b == NULL) {
+    pony_error();
+  }
+  mpz_xor(*(mpz_t*)r, *(mpz_t*)a, *(mpz_t*)b);
+}
+
 int
 pony_mpz_cmp(void* a, void* b) {
   if (a == NULL || b == NULL) {

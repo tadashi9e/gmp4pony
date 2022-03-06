@@ -1,6 +1,8 @@
 use "lib:gmp"
 use "lib:gmp4pony"
 
+use @pony_mpf_set_default_prec[None](prec: U64)
+use @pony_mpf_get_default_prec[U64]()
 use @pony_mpf_init[Pointer[None]]() 
 use @pony_mpf_init_set_ui[Pointer[None]](i: U64)
 use @pony_mpf_init_set_si[Pointer[None]](i: I64)
@@ -8,16 +10,15 @@ use @pony_mpf_init_set_d[Pointer[None]](double: F64)
 use @pony_mpf_init_set_z[Pointer[None]](f: Pointer[None])
 use @pony_mpf_init_set_str[Pointer[None]](s: Pointer[U8] tag,  base: I32)
 use @pony_mpf_clear[None](f: Pointer[None])
-use @pony_mpf_get_si[I64](p: Pointer[None])
-use @pony_mpf_get_ui[U64](p: Pointer[None])
-use @pony_mpf_get_d[F64](p: Pointer[None])
+use @pony_mpf_get_ui[U64](f: Pointer[None])
+use @pony_mpf_get_si[I64](f: Pointer[None])
+use @pony_mpf_get_d[F64](f: Pointer[None])
 use @pony_mpf_add[None](r: Pointer[None], a: Pointer[None], b: Pointer[None])
 use @pony_mpf_sub[None](r: Pointer[None], a: Pointer[None], b: Pointer[None])
 use @pony_mpf_mul[None](r: Pointer[None], a: Pointer[None], b: Pointer[None])
 use @pony_mpf_div[None](r: Pointer[None], a: Pointer[None], b: Pointer[None])
 use @pony_mpf_sqrt[None](r: Pointer[None], f: Pointer[None])
 use @pony_mpf_cmp[I32](f: Pointer[None], other: Pointer[None])
-use @pony_mpf_sizeinbase[USize](f: Pointer[None], base: I32)
 use @pony_mpf_snprintf[Pointer[U8] ref](
   buf: Pointer[U8] tag, size: USize, format: Pointer[U8] tag, f: Pointer[None])
 
@@ -26,6 +27,12 @@ class Mpf
   mpf_t wrapper class
   """
   let _f: Pointer[None]
+
+  fun set_default_prec(prec: U64): None =>
+    @pony_mpf_set_default_prec(prec)
+
+  fun get_default_prec(): U64 =>
+    @pony_mpf_get_default_prec()
 
   new create() =>
     """

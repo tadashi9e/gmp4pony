@@ -60,5 +60,5 @@ $(BUILD_DIR):
 
 .PHONY: all clean realclean TAGS test
 
-libgmp4pony.so:
+libgmp4pony.so: src/mpz.c src/mpf.c
 	(cd src && make && mv libgmp4pony.so ../libgmp4pony.so)

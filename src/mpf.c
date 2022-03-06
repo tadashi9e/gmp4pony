@@ -6,6 +6,15 @@
 
 extern void pony_error();
 
+void
+pony_mpf_set_default_prec(unsigned long int prec) {
+  mpf_set_default_prec(prec);
+}
+unsigned long int
+pony_mpf_get_default_prec() {
+  return mpf_get_default_prec();
+}
+
 mpf_t*
 pony_mpf_init() {
   mpf_t* f = (mpf_t*)malloc(sizeof(mpf_t));
