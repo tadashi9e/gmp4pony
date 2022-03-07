@@ -32,7 +32,7 @@ test: unit-tests build-examples
 unit-tests: $(tests_binary)
 	$^ --exclude=integration --sequential
 
-$(tests_binary): libgmp4pony.so $(SOURCE_FILES) | $(BUILD_DIR)
+$(tests_binary): $(SOURCE_FILES) | $(BUILD_DIR)
 	$(PONYC) -o ${BUILD_DIR} $(SRC_DIR)
 
 build-examples: $(SOURCE_FILES) $(EXAMPLES_SOURCE_FILES) | $(BUILD_DIR)
@@ -53,12 +53,9 @@ docs: $(docs_dir)
 TAGS:
 	ctags --recurse=yes $(SRC_DIR)
 
-all: libgmp4pony.so test
+all: test
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
 .PHONY: all clean realclean TAGS test
-
-libgmp4pony.so: src/mpz.c src/mpf.c
-	(cd src && make && mv libgmp4pony.so ../libgmp4pony.so)

@@ -1,7 +1,6 @@
 use "ponytest"
 use "path:.."
 use "lib:gmp"
-use "lib:gmp4pony"
 
 actor \nodoc\ Main is TestList
   new create(env: Env) => PonyTest(env, this)
