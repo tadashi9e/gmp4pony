@@ -196,7 +196,7 @@ pony_mpz_tstbit(void* z, unsigned long int bit_index) {
   if (z == NULL) {
     pony_error();
   }
-  mpz_tstbit(*(mpz_t*)z, (mp_bitcnt_t)bit_index);
+  return mpz_tstbit(*(mpz_t*)z, (mp_bitcnt_t)bit_index);
 }
 
 int

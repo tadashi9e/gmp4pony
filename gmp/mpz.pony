@@ -211,19 +211,19 @@ class Mpz
     @pony_mpz_xor(r._z, _z, other._z)
     r
 
-  fun setbit(bit_index: U64): None =>
+  fun ref setbit(bit_index: U64): None =>
     """
     Set bit (mpz_setbit)
     """
     @pony_mpz_setbit(_z, bit_index)
 
-  fun clrbit(bit_index: U64): None =>
+  fun ref clrbit(bit_index: U64): None =>
     """
     Clear bit (mpz_clrbit)
     """
     @pony_mpz_clrbit(_z, bit_index)
 
-  fun combit(bit_index: U64): None =>
+  fun ref combit(bit_index: U64): None =>
     """
     Complement bit (mpz_combit)
     """

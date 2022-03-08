@@ -49,7 +49,7 @@ class Mpf
     """
     _f = @pony_mpf_init()
 
-  fun set_prec(prec: U64): None =>
+  fun ref set_prec(prec: U64): None =>
     @pony_mpf_set_prec(_f, prec)
 
   fun box get_prec(): U64 =>
