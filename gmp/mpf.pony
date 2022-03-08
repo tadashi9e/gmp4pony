@@ -5,22 +5,23 @@ use @malloc[Pointer[U8] ref](size: USize)
 use @free[None](p: Pointer[None])
 use @__gmpf_set_default_prec[None](prec: U64)
 use @__gmpf_get_default_prec[U64]()
-use @__gmpf_init[None](mpf: MpfStruct tag)
-use @__gmpf_init_set_ui[None](mpf: MpfStruct tag, i: U64)
-use @__gmpf_init_set_si[None](mpf: MpfStruct tag, i: I64)
-use @__gmpf_init_set_d[None](mpf: MpfStruct tag, double: F64)
-use @__gmpf_init_set_z[None](mpf: MpfStruct tag, mpz: MpzStruct tag)
+use @__gmpf_init[None](mpf: MpfStruct)
+use @__gmpf_init_set_ui[None](mpf: MpfStruct, i: U64)
+use @__gmpf_init_set_si[None](mpf: MpfStruct, i: I64)
+use @__gmpf_init_set_d[None](mpf: MpfStruct, double: F64)
+use @__gmpf_init_set_z[None](mpf: MpfStruct, mpz: MpzStruct tag)
 use @__gmpf_init_set_str[None](mpf: MpfStruct, s: Pointer[U8] tag,  base: I32)
+use @__gmpf_set[None](mpf: MpfStruct, orig: MpfStruct tag)
 use @__gmpf_clear[None](mpf: MpfStruct tag)
 use @__gmpf_get_si[I64](mpf: MpfStruct tag)
 use @__gmpf_get_ui[U64](mpf: MpfStruct tag)
 use @__gmpf_get_d[F64](mpf: MpfStruct tag)
-use @__gmpf_abs[None](r: MpfStruct tag, mpf: MpfStruct tag)
-use @__gmpf_add[None](r: MpfStruct tag, a: MpfStruct tag, b: MpfStruct tag)
-use @__gmpf_sub[None](r: MpfStruct tag, a: MpfStruct tag, b: MpfStruct tag)
-use @__gmpf_mul[None](r: MpfStruct tag, a: MpfStruct tag, b: MpfStruct tag)
-use @__gmpf_div[None](r: MpfStruct tag, a: MpfStruct tag, b: MpfStruct tag)
-use @__gmpf_sqrt[None](r: MpfStruct tag, mpf: MpfStruct tag)
+use @__gmpf_abs[None](r: MpfStruct, mpf: MpfStruct tag)
+use @__gmpf_add[None](r: MpfStruct, a: MpfStruct tag, b: MpfStruct tag)
+use @__gmpf_sub[None](r: MpfStruct, a: MpfStruct tag, b: MpfStruct tag)
+use @__gmpf_mul[None](r: MpfStruct, a: MpfStruct tag, b: MpfStruct tag)
+use @__gmpf_div[None](r: MpfStruct, a: MpfStruct tag, b: MpfStruct tag)
+use @__gmpf_sqrt[None](r: MpfStruct, mpf: MpfStruct tag)
 use @__gmpf_cmp[I32](f: MpfStruct tag, other: MpfStruct tag)
 use @__gmp_snprintf[ISize](
   buf: Pointer[U8] tag, size: USize,
@@ -78,6 +79,13 @@ class Mpf
     Initialize and set the value from mpz (mpf_init & mpf_set_z).
     """
     @__gmpf_init_set_z(_f, mpz.cpointer())
+
+  new from(mpf: Mpf) =>
+    """
+    Initialize and set the value from mpf (mpf_init & mpf_set).
+    """
+    @__gmpf_init(_f)
+    @__gmpf_set(_f, mpf.cpointer())
 
   new from_string(s: String, base: I32 = 10) =>
     """

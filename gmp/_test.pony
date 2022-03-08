@@ -18,6 +18,8 @@ actor \nodoc\ Main is TestList
     test(_TestMpzDiv)
     test(_TestMpfDiv)
     test(_TestMpfSqrt)
+    test(_TestMpfSetbit)
+    test(_TestMpfClrbit)
 
 class \nodoc\ iso _TestMpzInit is UnitTest
   fun name(): String => "mpz/init"
@@ -117,3 +119,38 @@ class \nodoc\ iso _TestMpfSqrt is UnitTest
   fun apply(h: TestHelper) =>
     let f1: Mpf = Mpf.from_i64(12345)
     h.assert_eq[I64]((f1 * f1).sqrt().i64(), 12345)
+
+class \nodoc\ iso _TestMpfSetbit is UnitTest
+  fun name(): String => "mpf/setbit"
+
+  fun apply(h: TestHelper) =>
+    let z: Mpz = Mpz.from_i64(0)
+    var mask: U64 = 1
+    var i: U64 = 0
+    while i < 512 do
+      h.assert_eq[Bool](z.tstbit(i), false)
+      z.setbit(i)
+      h.assert_eq[Bool](z.tstbit(i), true)
+      mask = mask * 2
+      h.assert_eq[U64](z.u64(), mask - 1)
+      i = i + 1
+    end
+
+class \nodoc\ iso _TestMpfClrbit is UnitTest
+  fun name(): String => "mpf/clrbit"
+
+  fun apply(h: TestHelper) =>
+    let z: Mpz = Mpz.from_i64(0)
+    var mask: U64 = 1
+    var i: U64 = 0
+    while i < 512 do
+      z.setbit(i)
+      i = i + 1
+    end
+    i = 0
+    while i < 512 do
+      h.assert_eq[Bool](z.tstbit(i), true)
+      z.clrbit(i)
+      h.assert_eq[Bool](z.tstbit(i), false)
+      i = i + 1
+    end
