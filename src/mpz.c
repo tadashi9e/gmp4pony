@@ -60,6 +60,19 @@ pony_mpz_init_set_f(void* f) {
 }
 
 void*
+pony_mpz_init_set(void* z) {
+  if (z == NULL) {
+    pony_error();
+  }
+  mpz_t *z2 = pony_mpz_init();
+  if (z2 == NULL) {
+    pony_error();
+  }
+  mpz_set(*(mpz_t*)z2, *(mpz_t*)z);
+  return z2;
+}
+
+void*
 pony_mpz_init_set_str(const char* s, int base) {
   mpz_t *z = (mpz_t*)malloc(sizeof(mpz_t));
   if (z == NULL) {
@@ -152,6 +165,38 @@ pony_mpz_xor(void* r, void* a, void* b) {
     pony_error();
   }
   mpz_xor(*(mpz_t*)r, *(mpz_t*)a, *(mpz_t*)b);
+}
+
+void
+pony_mpz_setbit(void* z, unsigned long int bit_index) {
+  if (z == NULL) {
+    pony_error();
+  }
+  mpz_setbit(*(mpz_t*)z, (mp_bitcnt_t)bit_index);
+}
+
+void
+pony_mpz_clrbit(void* z, unsigned long int bit_index) {
+  if (z == NULL) {
+    pony_error();
+  }
+  mpz_clrbit(*(mpz_t*)z, (mp_bitcnt_t)bit_index);
+}
+
+void
+pony_mpz_combit(void* z, unsigned long int bit_index) {
+  if (z == NULL) {
+    pony_error();
+  }
+  mpz_combit(*(mpz_t*)z, (mp_bitcnt_t)bit_index);
+}
+
+int
+pony_mpz_tstbit(void* z, unsigned long int bit_index) {
+  if (z == NULL) {
+    pony_error();
+  }
+  mpz_tstbit(*(mpz_t*)z, (mp_bitcnt_t)bit_index);
 }
 
 int

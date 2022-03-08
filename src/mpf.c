@@ -8,11 +8,11 @@ extern void pony_error();
 
 void
 pony_mpf_set_default_prec(unsigned long int prec) {
-  mpf_set_default_prec(prec);
+  mpf_set_default_prec((mp_bitcnt_t)prec);
 }
 unsigned long int
 pony_mpf_get_default_prec() {
-  return mpf_get_default_prec();
+  return (unsigned long int)mpf_get_default_prec();
 }
 
 mpf_t*
@@ -65,9 +65,22 @@ pony_mpf_init_set_d(double d) {
 
 void*
 pony_mpf_init_set_z(void * z) {
+  if (z == NULL) {
+    pony_error();
+  }
   mpf_t* f = pony_mpf_init();
   mpf_set_z(*(mpf_t*)f, *(mpz_t*)z);
   return f;
+}
+
+void*
+pony_mpf_init_set(void * f) {
+  if (f == NULL) {
+    pony_error();
+  }
+  mpf_t* f2 = pony_mpf_init();
+  mpf_set(*(mpf_t*)f2, *(mpf_t*)f);
+  return f2;
 }
 
 void*
@@ -78,6 +91,22 @@ pony_mpf_init_set_str(const char* s, int base) {
   }
   mpf_init_set_str(*(mpf_t*)f, s, base);
   return f;
+}
+
+void
+pony_mpf_set_prec(void* f, unsigned long int prec) {
+  if (f == NULL) {
+    pony_error();
+  }
+  mpf_set_prec(*(mpf_t*)f, (mp_bitcnt_t)prec);
+}
+
+unsigned long int
+pony_mpf_get_prec(void* f) {
+  if (f == NULL) {
+    pony_error();
+  }
+  return (unsigned long int)mpf_get_prec(*(mpf_t*)f);
 }
 
 signed long int pony_mpf_get_si(void* f) {
@@ -99,6 +128,14 @@ double pony_mpf_get_d(void* f) {
     pony_error();
   }
   return mpf_get_d(*(mpf_t*)f);
+}
+
+void
+pony_mpf_abs(void* r, void* f) {
+  if (r == NULL || f == NULL) {
+    pony_error();
+  }
+  mpf_abs(*(mpf_t*)r, *(mpf_t*)f);
 }
 
 void
