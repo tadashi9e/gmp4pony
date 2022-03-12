@@ -12,7 +12,7 @@ pre-alpha software.
 * Install GMP library (gmp.h, libgmp.so)
 * Install [corral](https://github.com/ponylang/corral)
 * `corral init` in your project directory
-* `corral add github.com/tadashi9e/gmp4pony.git --version 0.0.0`
+* `corral add github.com/tadashi9e/gmp4pony.git --version 0.0.1`
 * `corral update`
 * `use "gmp"` to include this package
 * `corral run -- ponyc` to compile your application
