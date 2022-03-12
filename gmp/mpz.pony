@@ -6,22 +6,22 @@ use @__gmpz_init_set_ui[None](mpz: MpzStruct, i: U64)
 use @__gmpz_init_set_si[None](mpz: MpzStruct, i: I64)
 use @__gmpz_init_set_d[None](mpz: MpzStruct, double: F64)
 use @__gmpz_init_set_str[None](mpz: MpzStruct, s: Pointer[U8] tag,  base: I32)
-use @__gmpz_init_set_f[None](mpz: MpzStruct, f: MpfStruct tag)
-use @__gmpz_set[None](mpz: MpzStruct, orig: MpzStruct tag)
+use @__gmpz_set_f[None](mpz: MpzStruct, f: MpfStruct tag)
+use @__gmpz_set[None](mpz: MpzStruct tag, orig: MpzStruct tag)
 use @__gmpz_clear[None](mpz: MpzStruct tag)
 use @__gmpz_get_si[I64](mpz: MpzStruct tag)
 use @__gmpz_get_ui[U64](mpz: MpzStruct tag)
 use @__gmpz_get_d[F64](mpz: MpzStruct tag)
-use @__gmpz_add[None](r: MpzStruct, a: MpzStruct tag, b: MpzStruct tag)
-use @__gmpz_sub[None](r: MpzStruct, a: MpzStruct tag, b: MpzStruct tag)
-use @__gmpz_mul[None](r: MpzStruct, a: MpzStruct tag, b: MpzStruct tag)
-use @__gmpz_fdiv_q[None](r: MpzStruct, a: MpzStruct tag, b: MpzStruct tag)
-use @__gmpz_and[None](r: MpzStruct, a: MpzStruct tag, b: MpzStruct tag)
-use @__gmpz_ior[None](r: MpzStruct, a: MpzStruct tag, b: MpzStruct tag)
-use @__gmpz_xor[None](r: MpzStruct, a: MpzStruct tag, b: MpzStruct tag)
-use @__gmpz_setbit[None](mpz: MpzStruct, bit_index: U64)
-use @__gmpz_clrbit[None](mpz: MpzStruct, bit_index: U64)
-use @__gmpz_combit[None](mpz: MpzStruct, bit_index: U64)
+use @__gmpz_add[None](r: MpzStruct tag, a: MpzStruct tag, b: MpzStruct tag)
+use @__gmpz_sub[None](r: MpzStruct tag, a: MpzStruct tag, b: MpzStruct tag)
+use @__gmpz_mul[None](r: MpzStruct tag, a: MpzStruct tag, b: MpzStruct tag)
+use @__gmpz_fdiv_q[None](r: MpzStruct tag, a: MpzStruct tag, b: MpzStruct tag)
+use @__gmpz_and[None](r: MpzStruct tag, a: MpzStruct tag, b: MpzStruct tag)
+use @__gmpz_ior[None](r: MpzStruct tag, a: MpzStruct tag, b: MpzStruct tag)
+use @__gmpz_xor[None](r: MpzStruct tag, a: MpzStruct tag, b: MpzStruct tag)
+use @__gmpz_setbit[None](mpz: MpzStruct tag, bit_index: U64)
+use @__gmpz_clrbit[None](mpz: MpzStruct tag, bit_index: U64)
+use @__gmpz_combit[None](mpz: MpzStruct tag, bit_index: U64)
 use @__gmpz_tstbit[I32](mpz: MpzStruct tag, bit_index: U64)
 use @__gmpz_cmp[I32](mpz: MpzStruct tag, other: MpzStruct tag)
 use @__gmpz_sizeinbase[USize](mpz: MpzStruct tag, base: I32)
@@ -43,41 +43,42 @@ class Mpz
   """
   let _z: MpzStruct = MpzStruct
 
-  new create() =>
+  new iso create() =>
     """
     Initialize to 0 (mpz_init).
     """
     @__gmpz_init(_z)
 
-  new from_u64(u: U64) =>
+  new iso from_u64(u: U64) =>
     """
     Initialize and set the value from u (mpz_init_set_ui).
     """
     @__gmpz_init_set_ui(_z, u)
 
-  new from_i64(i: I64) =>
+  new val from_i64(i: I64) =>
     """
     Initialize and set the value from i (mpz_init_set_si).
     """
     @__gmpz_init_set_si(_z, i)
 
-  new from_f64(double: F64) =>
+  new iso from_f64(double: F64) =>
     """
     Initialize and set the value from double (mpz_init_set_d).
     """
     @__gmpz_init_set_d(_z, double)
-  new from(mpz: Mpz) =>
+  new iso from(mpz: Mpz val) =>
     """
     Initialize and set the value from mpf (mpz_init & mpz_set_f).
     """
     @__gmpz_init(_z)
     @__gmpz_set(_z, mpz.cpointer())
-  new from_mpf(mpf: Mpf) =>
+  new iso from_mpf(mpf: Mpf val) =>
     """
     Initialize and set the value from mpf (mpz_init & mpz_set_f).
     """
-    @__gmpz_init_set_f(_z, mpf.cpointer())
-  new from_string(s: String, base: I32 = 10) =>
+    @__gmpz_init(_z)
+    @__gmpz_set_f(_z, mpf.cpointer())
+  new iso from_string(s: String, base: I32 = 10) =>
     """
     Initialize and set the value from s (mpz_init_set_str).
     """
@@ -94,6 +95,10 @@ class Mpz
     Get mpz_t pointer.
     """
     _z
+
+  fun box copy_iso(other: Mpz iso): Mpz iso^ =>
+    @__gmpz_set(other._z, _z)
+    consume other
 
   fun box i64(): I64 =>
     """
@@ -113,9 +118,9 @@ class Mpz
     """
     @__gmpz_get_d(_z)
 
-  fun box format(base: I32 = 10): String ref ? =>
+  fun box format(base: I32 = 10): String ref^ ? =>
     """
-    Format value to string val (gmp_snprintf).
+    Format value to string val (gmp_get_str).
     """
     let bufSize: USize = @__gmpz_sizeinbase(_z, base) + 2
     let p: Pointer[U8] = @malloc(bufSize)
@@ -123,21 +128,22 @@ class Mpz
       error
     end
     @__gmpz_get_str(p, base, _z)
-    let s: String ref = String.from_cpointer(p, bufSize)
+    let s: String ref = String.copy_cstring(p)
     @free(p)
     s
   fun box string(base: I32 = 10): String val =>
     """
-    Format value to string val (gmp_snprintf).
+    Format value to string val (gmp_get_str).
     """
     try
-      let s: String ref = format(base)?
-      let bufSize: USize = s.size()
-      let copy: String iso = recover iso String(bufSize) end
-      var i: ISize = 0
+      let s: String ref = format(where base = base)?
+      let slen: USize = s.size()
+      let copy: String iso = recover iso String(slen) end
+      var i: USize = 0
       try
-        while i < bufSize.isize() do
-          copy.push(s.at_offset(i)?)
+        while i < s.size() do
+          let c: U8 val = s.at_offset(i.isize())?
+          copy.push(c)
           i = i + 1
         end
       end
@@ -146,88 +152,97 @@ class Mpz
       ""
     end
 
-  fun box neg(): Mpz =>
+  fun box neg(): Mpz val =>
     """
     Convert value to negative.
     """
-    let r: Mpz = Mpz
-    let zero: Mpz = Mpz.from_i64(0)
+    let r: Mpz iso = recover iso Mpz end
+    let zero: Mpz val = Mpz.from_i64(0)
     @__gmpz_sub(r._z, zero._z, _z)
-    r
+    consume r
 
-  fun box add(other: Mpz box): Mpz =>
+  fun box add(other: Mpz val): Mpz val =>
     """
     add operattor (mpz_add).
     """
-    let r: Mpz = Mpz
+    let r: Mpz iso = recover iso Mpz end
     @__gmpz_add(r._z, _z, other._z)
-    r
+    consume r
 
-  fun box sub(other: Mpz box): Mpz =>
+  fun box sub(other: Mpz val): Mpz val =>
     """
     sub operattor (mpz_sub).
     """
-    let r: Mpz = Mpz
+    let r: Mpz iso = recover iso Mpz end
     @__gmpz_sub(r._z, _z, other._z)
-    r
+    consume r
 
-  fun box mul(other: Mpz box): Mpz =>
+  fun box mul(other: Mpz val): Mpz val =>
     """
     mul operattor (mpz_mul).
     """
-    let r: Mpz = Mpz
+    let r: Mpz iso = recover iso Mpz end
     @__gmpz_mul(r._z, _z, other._z)
-    r
+    consume r
 
-  fun box div(other: Mpz box): Mpz =>
+  fun box div(other: Mpz val): Mpz val =>
     """
     div operattor (mpz_div).
     """
-    let r: Mpz = Mpz
+    let r: Mpz iso = recover iso Mpz end
     @__gmpz_fdiv_q(r._z, _z, other._z)
-    r
+    consume r
 
-  fun box op_and(other: Mpz box): Mpz =>
+  fun box op_and(other: Mpz val): Mpz val =>
     """
     and operator (mpz_and).
     """
-    let r: Mpz = Mpz
+    let r: Mpz iso = recover iso Mpz end
     @__gmpz_and(r._z, _z, other._z)
-    r
+    consume r
 
-  fun box op_or(other: Mpz box): Mpz =>
+  fun box op_or(other: Mpz val): Mpz val =>
     """
     or operator (mpz_ior).
     """
-    let r: Mpz = Mpz
+    let r: Mpz iso = recover iso Mpz end
     @__gmpz_ior(r._z, _z, other._z)
-    r
+    consume r
 
-  fun box op_xor(other: Mpz box): Mpz =>
+  fun box op_xor(other: Mpz val): Mpz val =>
     """
     xor operator (mpz_xor).
     """
-    let r: Mpz = Mpz
+    let r: Mpz iso = recover iso Mpz end
     @__gmpz_xor(r._z, _z, other._z)
-    r
+    consume r
 
-  fun ref setbit(bit_index: U64): None =>
+  fun box setbit(bit_index: U64): Mpz val =>
     """
     Set bit (mpz_setbit)
     """
-    @__gmpz_setbit(_z, bit_index)
+    var r: Mpz iso = recover iso Mpz end
+    r = copy_iso(consume r)
+    @__gmpz_setbit(r._z, bit_index)
+    consume r
 
-  fun ref clrbit(bit_index: U64): None =>
+  fun box clrbit(bit_index: U64): Mpz val =>
     """
     Clear bit (mpz_clrbit)
     """
-    @__gmpz_clrbit(_z, bit_index)
+    var r: Mpz iso = recover iso Mpz end
+    r = copy_iso(consume r)
+    @__gmpz_clrbit(r._z, bit_index)
+    consume r
 
-  fun ref combit(bit_index: U64): None =>
+  fun box combit(bit_index: U64): Mpz val =>
     """
     Complement bit (mpz_combit)
     """
-    @__gmpz_combit(_z, bit_index)
+    var r: Mpz iso = recover iso Mpz end
+    r = copy_iso(consume r)
+    @__gmpz_combit(r._z, bit_index)
+    consume r
 
   fun box tstbit(bit_index: U64): Bool =>
     """
@@ -235,7 +250,7 @@ class Mpz
     """
     if @__gmpz_tstbit(_z, bit_index) == 0 then false else true end
 
-  fun box eq(other: Mpz box): Bool =>
+  fun box eq(other: Mpz val): Bool =>
     """
     eq operator (mpz_cmp).
     """
@@ -245,7 +260,7 @@ class Mpz
       false
     end
 
-  fun box ne(other: Mpz box): Bool =>
+  fun box ne(other: Mpz val): Bool =>
     """
     ne operator (mpz_cmp).
     """
@@ -255,7 +270,7 @@ class Mpz
       true
     end
 
-  fun box lt(other: Mpz box): Bool =>
+  fun box lt(other: Mpz val): Bool =>
     """
     lt operator (mpz_cmp).
     """
@@ -265,7 +280,7 @@ class Mpz
       false
     end
 
-  fun box le(other: Mpz box): Bool =>
+  fun box le(other: Mpz val): Bool =>
     """
     le operator (mpz_cmp).
     """
@@ -275,7 +290,7 @@ class Mpz
       false
     end
 
-  fun box gt(other: Mpz box): Bool =>
+  fun box gt(other: Mpz val): Bool =>
     """
     gt operator (mpz_cmp).
     """
@@ -285,7 +300,7 @@ class Mpz
       false
     end
 
-  fun box ge(other: Mpz box): Bool =>
+  fun box ge(other: Mpz val): Bool =>
     """
     ge operator (mpz_cmp).
     """
